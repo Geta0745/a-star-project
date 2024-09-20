@@ -1,0 +1,16 @@
+{
+    "name": "BlobAssembly",
+    "rootNamespace": "BlobAssembly",
+    "references": [
+        "GUID:ff388f6b786fc1042a6a4cef9563362c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
