@@ -21,6 +21,22 @@ namespace PathfindingAssembly
             gridY = _gridY;
         }
 
+        int GetDistance(Node nodeA, Node nodeB)
+        {
+            int distX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
+            int distY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
+
+            int baseCost = (distX > distY) ? 14 * distY + 10 * (distX - distY) : 14 * distX + 10 * (distY - distX);
+
+            // Modify the cost based on obstacle proximity
+            if (!nodeB.walkable)
+            {
+                baseCost += 1000; // High penalty for moving into an obstacle
+            }
+
+            return baseCost;
+        }
+
         public int fCost
         {
             get { return gCost + hCost; }

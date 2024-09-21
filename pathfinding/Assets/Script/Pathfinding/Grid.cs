@@ -10,10 +10,10 @@ namespace PathfindingAssembly
         public Vector2 gridWorldSize;
         public float nodeRadius;
 
-        Node[,] grid;
+        public Node[,] grid;
         public List<Node> path; // Store the path for visualization
         float nodeDiameter;
-        int gridSizeX, gridSizeY;
+        public int gridSizeX, gridSizeY;
 
         void Start()
         {
@@ -73,6 +73,124 @@ namespace PathfindingAssembly
             }
 
             return neighbours;
+        }
+
+        public Vector3 NodeToWorldPoint(Node node)
+        {
+            if (node == null)
+            {
+                throw new System.ArgumentNullException(nameof(node), "Node cannot be null");
+            }
+
+            return node.worldPosition;
+        }
+
+        // Utility Functions
+        public Node FindClosestWalkableNode(Vector3 position)
+        {
+            Node closestNode = null;
+            float closestDistance = float.MaxValue;
+
+            foreach (var node in grid)
+            {
+                if (node.walkable)
+                {
+                    float distance = Vector3.Distance(position, node.worldPosition);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestNode = node;
+                    }
+                }
+            }
+
+            return closestNode;
+        }
+
+        public float GetPathLength(List<Node> path)
+        {
+            float totalLength = 0f;
+            for (int i = 0; i < path.Count - 1; i++)
+            {
+                totalLength += Vector3.Distance(path[i].worldPosition, path[i + 1].worldPosition);
+            }
+            return totalLength;
+        }
+
+        public bool IsTargetReachable(Vector3 targetPosition)
+        {
+            // Get the start and target nodes from the grid based on world positions
+            Node startNode = NodeFromWorldPoint(transform.position);
+            Node targetNode = NodeFromWorldPoint(targetPosition);
+
+            // Check if both the start and target nodes are walkable
+            if (startNode.walkable && targetNode.walkable)
+            {
+                // Implement a simple pathfinding check like Breadth-First Search (BFS) or A*
+                List<Node> openSet = new List<Node>();
+                HashSet<Node> closedSet = new HashSet<Node>();
+
+                openSet.Add(startNode);
+
+                while (openSet.Count > 0)
+                {
+                    Node currentNode = openSet[0];
+
+                    // If we reached the target node, it's reachable
+                    if (currentNode == targetNode)
+                    {
+                        return true;
+                    }
+
+                    openSet.Remove(currentNode);
+                    closedSet.Add(currentNode);
+
+                    foreach (Node neighbour in GetNeighbours(currentNode))
+                    {
+                        if (!neighbour.walkable || closedSet.Contains(neighbour))
+                        {
+                            continue;
+                        }
+
+                        if (!openSet.Contains(neighbour))
+                        {
+                            openSet.Add(neighbour);
+                        }
+                    }
+                }
+            }
+
+            // If we exhaust the open set without reaching the target, it's not reachable
+            return false;
+        }
+
+        public void SetNodeWalkability(Vector2 gridPosition, bool walkable)
+        {
+            int x = Mathf.RoundToInt(gridPosition.x);
+            int y = Mathf.RoundToInt(gridPosition.y);
+
+            if (x >= 0 && x < gridSizeX && y >= 0 && y < gridSizeY)
+            {
+                grid[x, y].walkable = walkable;
+            }
+        }
+
+        public List<Node> GetWalkableNodes()
+        {
+            List<Node> walkableNodes = new List<Node>();
+            foreach (var node in grid)
+            {
+                if (node.walkable)
+                {
+                    walkableNodes.Add(node);
+                }
+            }
+            return walkableNodes;
+        }
+
+        public void ClearPath()
+        {
+            path = new List<Node>();
         }
 
         void OnDrawGizmos()

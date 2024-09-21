@@ -12,6 +12,7 @@ namespace PathfindingAssembly
 
         protected override void Update()
         {
+            base.Update();
             // Handle acceleration and deceleration based on movementDirection
             if (movementDirection != Vector2.zero)
             {

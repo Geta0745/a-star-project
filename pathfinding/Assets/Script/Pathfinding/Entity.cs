@@ -17,8 +17,9 @@ namespace PathfindingAssembly
             rb = GetComponent<Rigidbody>(); // Get the Rigidbody component
         }
 
-        protected virtual void Update()
+        protected override void Update()
         {
+            base.Update();
             // If there is a movement direction from the seeker
             if (movementDirection != Vector2.zero)
             {

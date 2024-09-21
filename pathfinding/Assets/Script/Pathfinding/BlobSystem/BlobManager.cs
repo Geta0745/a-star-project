@@ -17,7 +17,7 @@ namespace PathfindingAssembly
 
         void Start()
         {
-            if(blobs == null)
+            if(blobs.Count == 0)
             {
                 SpawnBlobs();
             }
